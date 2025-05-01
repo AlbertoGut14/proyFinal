@@ -53,7 +53,24 @@
             </div>
         </header>
         
-        <!-- Footer-->
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-lg-6">
+                        <img class="img-fluid rounded mb-4 mb-lg-0" src="https://e0.365dm.com/25/02/2048x1152/skysports-pirelli-f1-2025-test_6820918.jpg?20250206074138" alt="About F1 Shop" />
+                    </div>
+                    <div class="col-lg-6">
+                        <h2 class="fw-bolder">Nuestra Historia</h2>
+                        <p class="lead">F1 Fanatic nació de la pasión por la velocidad, la ingeniería de precisión y el espíritu competitivo que define a la Fórmula 1. Nos dedicamos a ofrecer productos oficiales para todos los fans del automovilismo.</p>
+                        <p>Desde artículos de moda hasta Lego de F1, entre otros. Nuestra misión es acercarte al mundo de la F1 como nunca antes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
         <footer class="py-5 bg-dark">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; F1 Fanatic 2025</p></div>
         </footer>
