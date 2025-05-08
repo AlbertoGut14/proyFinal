@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -21,6 +23,12 @@
                 <div class="text-center text-white">
                     <h1 class="display-4 fw-bolder">Articulos de F1 Fanatic</h1>
                     <p class="lead fw-normal text-white-50 mb-0">Todos nuestros productos!</p>
+                    <br>
+                    <?php
+                        if (isset($_SESSION['usuario'])) {
+                            echo "<p class='lead fw-normal text-white-50 mb-0'>Bienvenido, {$_SESSION['usuario']}!</p>";
+                        }
+                    ?>
                 </div>
             </div>
         </header>
@@ -28,12 +36,9 @@
         <!-- Section-->
         <section class="py-5">
         <div class="container py-5">
-        
             <div class="row">
-
                 <?php
                     $con = mysqli_connect("localhost", "root", "", "f1_store");
-
                     if (!$con) {
                         die("<p class='text-danger'>Error de conexión: " . mysqli_connect_error() . "</p>");
                     }
@@ -46,15 +51,19 @@
                             echo "
                             <div class='col-md-4 mb-4'>
                                 <div class='card h-100 shadow'>
-                                    <img src='{$producto['fotos']}' class='card-img-top' alt='{$producto['nombre']}' style='height: 300px; object-fit: cover;'>
+                                    <a href='details.php?id={$producto['id']}'>
+                                        <img class='card-img-top' src='{$producto['fotos']}' alt='Imagen del producto' style='height: 300px; object-fit: cover;' />
+                                    </a>
                                     <div class='card-body'>
                                         <div class='text-center'>
-                                            <h5 class='fw-bolder'>{$producto['nombre']}</h5>
+                                            <a href='details.php?id={$producto['id']}' class='text-decoration-none text-dark'>
+                                                <h5 class='fw-bolder'>{$producto['nombre']}</h5>
+                                            </a>
                                             <p class='text-danger'>$ {$producto['precio']}</p>     
                                         </div>
                                     </div>
                                     <div class='card-footer text-center'>
-                                        <a href='#' class='btn btn-dark'>Agregar al carrito</a>
+                                        <a href='agregar.php?id={$producto['id']}' class='btn btn-dark'>Agregar al carrito</a>
                                     </div>
                                 </div>
                             </div>

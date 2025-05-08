@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -47,11 +50,12 @@
                                     if (mysqli_num_rows($result) == 1) {
                                         $usuario = mysqli_fetch_assoc($result);
                                         if ($contrasena === $usuario['contrasena']) {
-                                            // Inicio de sesión exitoso
-                                            session_start();
+                                            
                                             $_SESSION['usuario'] = $usuario['nombre'];
                                             echo "<p class='text-success mt-3'>Inicio de sesión exitoso. Redirigiendo...</p>";
-                                            echo "<script>setTimeout(function(){ window.location.href = 'index.html'; }, 1500);</script>";
+                                            $_SESSION['usuario'] = $usuario['nombre'];
+                                            $_SESSION['correo'] = $usuario['correo']; 
+                                            echo "<script>setTimeout(function(){ window.location.href = 'index.php'; }, 2500);</script>";
                                         } else {
                                             echo "<p class='text-danger mt-3'>Contraseña incorrecta.</p>";
                                         }
