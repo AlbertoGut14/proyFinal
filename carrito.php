@@ -35,6 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Carrito de Compras</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link href="css/styles.css" rel="stylesheet" />
+
+    <script>
+    function confirmarCompra() {
+        return confirm("¿Estás seguro de que deseas finalizar la compra?");
+    }
+    </script>
 </head>
 <body>
     <?php include 'barranav.php'; ?>
@@ -90,7 +96,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     echo "
                                     <tr class='table-secondary fw-bold'>
                                         <td colspan='5'>
-                                            <a href='finalizar.php' class='btn btn-success'>Finalizar Compra</a>
+                                            <form action='finalizar.php' method='POST' onsubmit='return confirmarCompra();'>
+                                                <button type='submit' class='btn btn-success'>Finalizar compra</button>
+                                            </form>
                                         </td>
                                     </tr>";
                                 } else {

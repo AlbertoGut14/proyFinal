@@ -69,7 +69,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <p>Fabricante del Producto: {$fab}</p>
                                 <p>Origen del Producto: {$origen}</p>
                                 <div class='d-flex justify-content-start'>
-                                    <a href='agregar_carrito.php?id={$producto['id']}' class='btn btn-dark btn-lg'>Agregar al carrito</a>
+                                    <a href='agregar.php?id={$producto['id']}' class='btn btn-dark btn-lg'>Agregar al carrito</a>
                                 </div>
                             </div>
                             ";

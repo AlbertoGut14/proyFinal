@@ -5,7 +5,6 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: login.php");
     exit();
 }
-
 include 'conexion.php';
 
 $id_usuario = $_SESSION['usuario'];
