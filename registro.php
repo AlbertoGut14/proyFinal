@@ -11,7 +11,9 @@ session_start();
     <link href="css/styles.css" rel="stylesheet" />
 </head>
 <body>
+<?php include 'barranav.php'; ?>
     <div class="text-center p-3">
+        <br><br>
         <h1>Registro de usuario</h1>
     </div>
     <section>

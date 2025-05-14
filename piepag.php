@@ -1,4 +1,4 @@
-<footer class="py-5 bg-dark">
+<footer class="bg-dark py-3 mt-auto">
     <div class="container">
         <h6 class="fw-bolder text-center text-white">Contacto: f1fanatic@gmail.com</h6>
         <br>

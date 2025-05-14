@@ -18,19 +18,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar'])) {
     $precio = $_POST['precio'];
     $cantidad = $_POST['cantidad'];
     $foto = $_POST['foto'];
+    $fab = $_POST['fab'];
+    $origen = $_POST['origen'];
 
-    $sql_insert = "INSERT INTO productos (nombre, descripcion, precio, cantidad, fotos) VALUES ('$nombre', '$descripcion', $precio, $cantidad, '$foto')";
+    $sql_insert = "INSERT INTO productos (nombre, descripcion, precio, cantidad, fotos, fab, origen) VALUES ('$nombre', '$descripcion', $precio, $cantidad, '$foto', '$fab', '$origen')";
     mysqli_query($con, $sql_insert);
 }
 
-// Lógica para eliminar un producto
 if (isset($_GET['eliminar'])) {
     $id_producto = $_GET['eliminar'];
     $sql_delete = "DELETE FROM productos WHERE id = $id_producto";
     mysqli_query($con, $sql_delete);
 }
 
-// Lógica para editar un producto
 if (isset($_GET['editar'])) {
     $id_producto = $_GET['editar'];
     $sql_edit = "SELECT * FROM productos WHERE id = $id_producto";
@@ -47,8 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['editar'])) {
     $precio = $_POST['precio'];
     $cantidad = $_POST['cantidad'];
     $foto = $_POST['foto'];
+    $fab = $_POST['fab'];
+    $origen = $_POST['origen'];
 
-    $sql_update = "UPDATE productos SET nombre='$nombre', descripcion='$descripcion', precio=$precio, cantidad=$cantidad, fotos='$foto' WHERE id=$id_producto";
+    $sql_update = "UPDATE productos SET nombre='$nombre', descripcion='$descripcion', precio=$precio, cantidad=$cantidad, fotos='$foto', fabricante='$fab', origen='$origen' WHERE id=$id_producto";
     mysqli_query($con, $sql_update);
 }
 
@@ -57,10 +59,10 @@ $sql_productos = "SELECT * FROM productos";
 $res_productos = mysqli_query($con, $sql_productos);
 
 // Obtener el historial de compras
-$sql_historial_compras = "SELECT u.nombre as usuario, p.nombre as producto, c.cantidad, p.precio, (c.cantidad * p.precio) as subtotal
-                          FROM compras c
-                          JOIN productos p ON c.producto = p.id
-                          JOIN usuarios u ON c.usuario = u.id";
+$sql_historial_compras = "SELECT usuarios.nombre as usuario, productos.nombre as producto, compras.cantidad, productos.precio, (compras.cantidad * productos.precio) as subtotal
+                          FROM compras
+                          JOIN productos ON compras.producto = productos.id
+                          JOIN usuarios ON compras.usuario = usuarios.id";
 $res_historial_compras = mysqli_query($con, $sql_historial_compras);
 ?>
 
@@ -74,138 +76,164 @@ $res_historial_compras = mysqli_query($con, $sql_historial_compras);
 <body>
     <?php include 'barranav.php'; ?>
 
-    <div class="container mt-5">
-        <h2>Panel de Administración</h2>
+    <header class="bg-dark py-5">
+        <div class="container text-center text-white">
+            <br><br><br>
+            <h1 class="display-4 fw-bolder">Panel de Administración</h1>
+        </div>
+    </header>
 
-        <!-- Mostrar productos existentes -->
-        <h3 class="mt-5">Productos en Inventario</h3>
-        <table class="table table-bordered table-hover mt-3">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Imagen</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if (mysqli_num_rows($res_productos) > 0) {
-                    while ($row = mysqli_fetch_assoc($res_productos)) {
-                        echo "
+<div class="container mt-5">
+    <div class="alert alert-primary mt-4" role="alert">
+    <h4 class="alert-heading">¡Bienvenido al panel de administración!</h4>
+    <p>Aquí puedes gestionar el inventario de productos, revisar el historial de compras y mantener tu tienda siempre actualizada.</p>
+    <hr>
+    <p class="mb-0">Usa las opciones a continuación para comenzar.</p>
+    </div>
+    <br>
+    <div class="d-flex gap-3 mb-4">
+        <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#seccionInventario">Ver Inventario</button>
+        <button class="btn btn-success" data-bs-toggle="collapse" data-bs-target="#seccionAgregar">Agregar Producto</button>
+        <button class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#seccionHistorial">Historial de Compras</button>
+    </div>
+    <br>
+    <div id="seccionInventario" class="collapse">
+        <h3>Productos en Inventario</h3>
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Cantidad</th><th>Fabricante</th><th>Origen</th><th>Imagen</th><th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = mysqli_fetch_assoc($res_productos)): ?>
                         <tr>
-                            <td>{$row['id']}</td>
-                            <td>{$row['nombre']}</td>
-                            <td>{$row['descripcion']}</td>
-                            <td>\${$row['precio']}</td>
-                            <td>{$row['cantidad']}</td>
-                            <td><img src='{$row['fotos']}' width='100' height='100' style='object-fit:cover;'></td>
+                            <td><?= $row['id'] ?></td>
+                            <td><?= $row['nombre'] ?></td>
+                            <td><?= $row['descripcion'] ?></td>
+                            <td>$<?= $row['precio'] ?></td>
+                            <td><?= $row['cantidad'] ?></td>
+                            <td><?= $row['fabricante'] ?? 'N/A' ?></td>
+                            <td><?= $row['origen'] ?? 'N/A' ?></td>
+                            <td><img src="<?= $row['fotos'] ?>" width="100" height="100" style="object-fit:cover;"></td>
                             <td>
-                                <a href='admin.php?editar={$row['id']}' class='btn btn-sm btn-outline-warning'>Editar</a>
-                                <a href='admin.php?eliminar={$row['id']}' class='btn btn-sm btn-outline-danger'>Eliminar</a>
+                                <a href="admin.php?editar=<?= $row['id'] ?>" class="btn btn-sm btn-outline-warning mb-1">Editar</a>
+                                <a href="admin.php?eliminar=<?= $row['id'] ?>" class="btn btn-sm btn-outline-danger">Eliminar</a>
                             </td>
-                        </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='7'>No hay productos disponibles.</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
-
-        <!-- Formulario para agregar nuevo producto -->
-        <h3 class="mt-5">Agregar Nuevo Producto</h3>
-        <form method="post">
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre del Producto</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" required>
-            </div>
-            <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="precio" class="form-label">Precio</label>
-                <input type="number" class="form-control" id="precio" name="precio" required>
-            </div>
-            <div class="mb-3">
-                <label for="cantidad" class="form-label">Cantidad</label>
-                <input type="number" class="form-control" id="cantidad" name="cantidad" required>
-            </div>
-            <div class="mb-3">
-                <label for="foto" class="form-label">URL de la Imagen</label>
-                <input type="text" class="form-control" id="foto" name="foto" required>
-            </div>
-            <button type="submit" name="agregar" class="btn btn-primary">Agregar Producto</button>
-        </form>
-
-        <!-- Formulario de edición del producto -->
-        <?php if ($mostrar_editar && $product_to_edit): ?>
-        <h3 class="mt-5">Editar Producto</h3>
-        <form method="post">
-            <input type="hidden" name="id_producto" value="<?php echo $product_to_edit['id']; ?>">
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre del Producto</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $product_to_edit['nombre']; ?>" required>
-            </div>
-            <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="descripcion" name="descripcion" required><?php echo $product_to_edit['descripcion']; ?></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="precio" class="form-label">Precio</label>
-                <input type="number" class="form-control" id="precio" name="precio" value="<?php echo $product_to_edit['precio']; ?>" required>
-            </div>
-            <div class="mb-3">
-                <label for="cantidad" class="form-label">Cantidad</label>
-                <input type="number" class="form-control" id="cantidad" name="cantidad" value="<?php echo $product_to_edit['cantidad']; ?>" required>
-            </div>
-            <div class="mb-3">
-                <label for="foto" class="form-label">URL de la Imagen</label>
-                <input type="text" class="form-control" id="foto" name="foto" value="<?php echo $product_to_edit['fotos']; ?>" required>
-            </div>
-            <button type="submit" name="editar" class="btn btn-warning">Actualizar Producto</button>
-        </form>
-        <?php endif; ?>
-
-        <!-- Historial de compras -->
-        <h3 class="mt-5">Historial de Compras</h3>
-        <table class="table table-bordered table-hover mt-3">
-            <thead class="table-dark">
-                <tr>
-                    <th>Usuario</th>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if (mysqli_num_rows($res_historial_compras) > 0) {
-                    while ($row = mysqli_fetch_assoc($res_historial_compras)) {
-                        $subtotal = $row['cantidad'] * $row['precio'];
-                        echo "
-                        <tr>
-                            <td>{$row['usuario']}</td>
-                            <td>{$row['producto']}</td>
-                            <td>{$row['cantidad']}</td>
-                            <td>\${$row['precio']}</td>
-                            <td>\${$subtotal}</td>
-                        </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='5'>No hay compras registradas.</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
-
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+        <br>
     </div>
 
+    <!-- Agregar producto -->
+    <div id="seccionAgregar" class="collapse mt-5">
+        <h3>Agregar Nuevo Producto</h3>
+        <form method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Precio</label>
+                    <input type="number" name="precio" class="form-control" required>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Descripción</label>
+                    <textarea name="descripcion" class="form-control" required></textarea>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Cantidad</label>
+                    <input type="number" name="cantidad" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fabricante</label>
+                    <input type="text" name="fabricante" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Origen</label>
+                    <input type="text" name="origen" class="form-control">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">URL de Imagen</label>
+                    <input type="text" name="foto" class="form-control">
+                </div>
+            </div>
+            <button type="submit" name="agregar" class="btn btn-success mt-3">Agregar Producto</button>
+        </form>
+        <br>
+    </div>
+
+    <div id="seccionHistorial" class="collapse mt-5">
+        <h3>Historial de Compras</h3>
+        <table class="table table-hover">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Usuario</th><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = mysqli_fetch_assoc($res_historial_compras)): ?>
+                    <tr>
+                        <td><?= $row['usuario'] ?></td>
+                        <td><?= $row['producto'] ?></td>
+                        <td><?= $row['cantidad'] ?></td>
+                        <td>$<?= $row['precio'] ?></td>
+                        <td>$<?= $row['subtotal'] ?></td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+        <br>
+    </div>
+
+    <?php if ($mostrar_editar && $product_to_edit): ?>
+    <div class="mt-5">
+        <h3>Editar Producto</h3>
+        <form method="post">
+            <input type="hidden" name="id_producto" value="<?= $product_to_edit['id'] ?>">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" class="form-control" value="<?= $product_to_edit['nombre'] ?>" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Precio</label>
+                    <input type="number" name="precio" class="form-control" value="<?= $product_to_edit['precio'] ?>" required>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Descripción</label>
+                    <textarea name="descripcion" class="form-control" required><?= $product_to_edit['descripcion'] ?></textarea>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Cantidad</label>
+                    <input type="number" name="cantidad" class="form-control" value="<?= $product_to_edit['cantidad'] ?>" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fabricante</label>
+                    <input type="text" name="fabricante" class="form-control" value="<?= $product_to_edit['fabricante'] ?? '' ?>">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Origen</label>
+                    <input type="text" name="origen" class="form-control" value="<?= $product_to_edit['origen'] ?? '' ?>">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">URL de Imagen</label>
+                    <input type="text" name="foto" class="form-control" value="<?= $product_to_edit['fotos'] ?>" required>
+                </div>
+            </div>
+            <button type="submit" name="editar" class="btn btn-warning mt-3">Actualizar Producto</button>
+        </form>
+        <br>
+    </div>
+    <?php endif; ?>
+</div>
+
     <?php include 'piepag.php'; ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

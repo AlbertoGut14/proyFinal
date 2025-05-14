@@ -107,7 +107,7 @@ mysqli_close($con);
                                         echo "
                                         <tr>
                                             <td>{$row['nombre']}</td>
-                                            <td>{$row['fotos']}</td>
+                                            <td><img src='{$row['fotos']}' width='100' height='100' style='object-fit:cover;'></td>
                                             <td>\${$row['precio']}</td>
                                             <td>{$row['cantidad']}</td>
                                         </tr>";

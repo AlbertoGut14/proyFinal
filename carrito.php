@@ -11,19 +11,38 @@ include 'conexion.php';
 $id_usuario = $_SESSION['usuario'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['actualizar'])) {
-        $id_producto = $_POST['producto_id'];
-        $nueva_cantidad = max(1, intval($_POST['cantidad']));
-        $sql_update = "UPDATE carrito SET cantidad = $nueva_cantidad WHERE usuario = $id_usuario AND producto = $id_producto";
-        mysqli_query($con, $sql_update);
+    $id_producto = $_POST['producto_id'];
+
+    if (isset($_POST['sumar']) || isset($_POST['restar'])) {
+        $sql_cantidad = "SELECT cantidad FROM carrito WHERE usuario = $id_usuario AND producto = $id_producto";
+        $res = mysqli_query($con, $sql_cantidad);
+        $row = mysqli_fetch_assoc($res);
+        $cantidad_actual = (int) $row['cantidad'];
+
+        if (isset($_POST['sumar'])) {
+            $nueva_cantidad = $cantidad_actual + 1;
+            $sql_update = "UPDATE carrito SET cantidad = $nueva_cantidad WHERE usuario = $id_usuario AND producto = $id_producto";
+            mysqli_query($con, $sql_update);
+        } elseif (isset($_POST['restar'])) {
+            if ($cantidad_actual <= 1) {
+                
+                $sql_delete = "DELETE FROM carrito WHERE usuario = $id_usuario AND producto = $id_producto";
+                mysqli_query($con, $sql_delete);
+            } else {
+                
+                $nueva_cantidad = $cantidad_actual - 1;
+                $sql_update = "UPDATE carrito SET cantidad = $nueva_cantidad WHERE usuario = $id_usuario AND producto = $id_producto";
+                mysqli_query($con, $sql_update);
+            }
+        }
     }
 
     if (isset($_POST['eliminar'])) {
-        $id_producto = $_POST['producto_id'];
         $sql_delete = "DELETE FROM carrito WHERE usuario = $id_usuario AND producto = $id_producto";
         mysqli_query($con, $sql_delete);
     }
 }
+
 
     mysqli_close($con);
 ?>
@@ -47,6 +66,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <header class="bg-dark py-5">
         <div class="container text-center text-white">
+            <br>
+            <br>
             <h1 class="display-4 fw-bolder">Tu carrito</h1>
         </div>
     </header>
@@ -85,10 +106,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <td>\${$row['precio']}</td>
                                             <td>{$row['cantidad']}</td>
                                             <td>
-                                                <form method='post'>
-                                                    <input type='hidden' name='producto_id' value='{$row['id']}'>
-                                                    <button type='submit' name='eliminar' class='btn btn-sm btn-outline-danger'>Eliminar</button>
-                                                </form>
+                                                <div class='d-flex justify-content-center gap-1'>
+                                                    <form method='post'>
+                                                        <input type='hidden' name='producto_id' value='{$row['id']}'>
+                                                        <button type='submit' name='restar' class='btn btn-sm btn-outline-secondary'>−</button>
+                                                    </form>
+                                                    <form method='post'>
+                                                        <input type='hidden' name='producto_id' value='{$row['id']}'>
+                                                        <button type='submit' name='sumar' class='btn btn-sm btn-outline-secondary'>+</button>
+                                                    </form>
+                                                    <form method='post'>
+                                                        <input type='hidden' name='producto_id' value='{$row['id']}'>
+                                                        <button type='submit' name='eliminar' class='btn btn-sm btn-outline-danger'>Eliminar</button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>";
                                     }
