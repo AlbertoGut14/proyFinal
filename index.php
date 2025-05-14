@@ -26,7 +26,7 @@
                     <br>
                     <?php
                         if (isset($_SESSION['usuario'])) {
-                            echo "<p class='lead fw-normal text-white-50 mb-0'>Bienvenido, {$_SESSION['usuario']}!</p>";
+                            echo "<p class='lead fw-normal text-white-50 mb-0'>Bienvenido, {$_SESSION['nombre']}!</p>";
                         }
                     ?>
                 </div>
@@ -38,10 +38,7 @@
         <div class="container py-5">
             <div class="row">
                 <?php
-                    $con = mysqli_connect("localhost", "root", "", "f1_store");
-                    if (!$con) {
-                        die("<p class='text-danger'>Error de conexión: " . mysqli_connect_error() . "</p>");
-                    }
+                    include 'conexion.php';
 
                     $sql = "SELECT * FROM productos";
                     $result = mysqli_query($con, $sql);

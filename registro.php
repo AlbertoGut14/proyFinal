@@ -54,11 +54,7 @@ session_start();
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $con = mysqli_connect("localhost", "root", "", "f1_store");
-
-        if (mysqli_connect_errno()) {
-            die("Error al conectar con MySQL: " . mysqli_connect_error());
-        }
+        include 'conexion.php';
 
         // Sanitizar entradas
         $nombre     = mysqli_real_escape_string($con, $_POST['nombre']);
@@ -71,7 +67,7 @@ session_start();
         // Validar si el correo ya existe
         $check = mysqli_query($con, "SELECT * FROM usuarios WHERE correo = '$correo'");
         if (mysqli_num_rows($check) > 0) {
-            echo "<p style='color:red;'>El correo ya está registrado.</p>";
+            echo "<div class='text-center'><p style='color:red;'>El correo ya está registrado.</p></div>";
         } else {
             $sql = "INSERT INTO usuarios (nombre, correo, contrasena, nacimiento, tarjeta, cp)
                     VALUES ('$nombre', '$correo', '$contrasena', '$nacimiento', '$tarjeta', '$cp')";
@@ -80,7 +76,7 @@ session_start();
                 die("Error: " . mysqli_error($con));
             }
 
-            echo "<p style='color:green;'>Usuario registrado exitosamente.</p>";
+            echo "<div class='text-center'><p style='color:green;'>Usuario registrado exitosamente.</p></div>";
         }
 
         mysqli_close($con);

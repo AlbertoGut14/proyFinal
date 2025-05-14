@@ -30,11 +30,6 @@ if (!isset($_SESSION['usuario'])) {
                     <h1 class="display-4 fw-bolder">Detalles del Producto</h1>
                     <p class="lead fw-normal text-white-50 mb-0">Más información sobre este producto de F1 Fanatic</p>
                     <br>
-                    <?php
-                        if (isset($_SESSION['usuario'])) {
-                            echo "<p class='lead fw-normal text-white-50 mb-0'>Bienvenido, {$_SESSION['usuario']}!</p>";
-                        }
-                    ?>
                 </div>
             </div>
         </header>
@@ -44,10 +39,7 @@ if (!isset($_SESSION['usuario'])) {
         <div class="container py-5">
             <div class="row">
                 <?php
-                    $con = mysqli_connect("localhost", "root", "", "f1_store");
-                    if (!$con) {
-                        die("<p class='text-danger'>Error de conexión: " . mysqli_connect_error() . "</p>");
-                    }
+                    include 'conexion.php';
 
                     // Verificar que 'id' esté en la URL
                     if (isset($_GET['id'])) {
@@ -63,6 +55,8 @@ if (!isset($_SESSION['usuario'])) {
                             $descripcion = $producto['descripcion'];
                             $precio = $producto['precio'];
                             $fotos = $producto['fotos'];
+                            $fab = $producto['fab'];
+                            $origen = $producto['origen'];
 
                             echo "
                             <div class='col-md-6'>
@@ -72,6 +66,8 @@ if (!isset($_SESSION['usuario'])) {
                                 <h2 class='fw-bolder'>{$nombre}</h2>
                                 <p class='text-danger fs-4'>$ {$precio}</p>
                                 <p>{$descripcion}</p>
+                                <p>Fabricante del Producto: {$fab}</p>
+                                <p>Origen del Producto: {$origen}</p>
                                 <div class='d-flex justify-content-start'>
                                     <a href='agregar_carrito.php?id={$producto['id']}' class='btn btn-dark btn-lg'>Agregar al carrito</a>
                                 </div>

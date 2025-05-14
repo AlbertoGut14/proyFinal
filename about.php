@@ -1,7 +1,6 @@
+<?php session_start(); ?>
 
-<?php
-session_start();
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
     <head>
         <meta charset="utf-8" />
@@ -36,6 +35,7 @@ session_start();
                         <h2 class="fw-bolder">Nuestra Historia</h2>
                         <p class="lead">F1 Fanatic nació de la pasión por la velocidad, la ingeniería de precisión y el espíritu competitivo que define a la Fórmula 1. Nos dedicamos a ofrecer productos oficiales para todos los fans del automovilismo.</p>
                         <p>Desde artículos de moda hasta Lego de F1, entre otros. Nuestra misión es acercarte al mundo de la F1 como nunca antes.</p>
+                        <h6 class="fw-bolder">Contacto: f1fanatic@gmail.com</h6>
                     </div>
                 </div>
             </div>

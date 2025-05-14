@@ -51,9 +51,9 @@ session_start();
                                         $usuario = mysqli_fetch_assoc($result);
                                         if ($contrasena === $usuario['contrasena']) {
                                             
-                                            $_SESSION['usuario'] = $usuario['nombre'];
+                                            $_SESSION['usuario'] = $usuario['id'];
                                             echo "<p class='text-success mt-3'>Inicio de sesión exitoso. Redirigiendo...</p>";
-                                            $_SESSION['usuario'] = $usuario['nombre'];
+                                            $_SESSION['nombre'] = $usuario['nombre'];
                                             $_SESSION['correo'] = $usuario['correo']; 
                                             echo "<script>setTimeout(function(){ window.location.href = 'index.php'; }, 2500);</script>";
                                         } else {
