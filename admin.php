@@ -114,7 +114,7 @@ $res_historial_compras = mysqli_query($con, $sql_historial_compras);
                             <td><?= $row['descripcion'] ?></td>
                             <td>$<?= $row['precio'] ?></td>
                             <td><?= $row['cantidad'] ?></td>
-                            <td><?= $row['fabricante'] ?? 'N/A' ?></td>
+                            <td><?= $row['fab'] ?? 'N/A' ?></td>
                             <td><?= $row['origen'] ?? 'N/A' ?></td>
                             <td><img src="<?= $row['fotos'] ?>" width="100" height="100" style="object-fit:cover;"></td>
                             <td>
